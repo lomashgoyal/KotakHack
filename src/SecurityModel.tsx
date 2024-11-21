@@ -1,3 +1,4 @@
+/*eslint-disable no-unused-vars */
 import React, { useState } from "react";
 
 const SecurityModel = () => {
@@ -8,7 +9,7 @@ const [submitted, setSubmitted] = useState(false);
 
 
 // Handle query submission
-const handleQuerySubmit = async (e) => {
+const handleQuerySubmit = async (e:React.FormEvent) => {
 e.preventDefault();
 setSubmitted(false);
 try {
