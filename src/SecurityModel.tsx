@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // Define the ModelResponse type
 type ModelResponse = {
   modelId: string;
-  generatedText: string;
+  generated_text: string;
   citations: string[];
 };
 
@@ -22,14 +22,15 @@ const SecurityModel = () => {
       const response = await fetch("https://f985wnbunl.execute-api.us-west-2.amazonaws.com/uat/query", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }), // Ensure query is passed as a JSON object
+        body: JSON.stringify({ query }),
+       // mode: 'no-cors'// Ensure query is passed as a JSON object
       });
       const data = await response.json(); // Assuming Lambda returns the structure described above
 
       // Convert response into an array of model results for display
       const results: ModelResponse[] = Object.keys(data).map((modelId) => ({
         modelId,
-        generatedText: data[modelId].generatedText,
+        generatedText: data[modelId].generated_text,
         citations: data[modelId].citations,
       }));
 
