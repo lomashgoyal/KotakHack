@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // Define the ModelResponse type
 type ModelResponse = {
   modelId: string;
-  generated_text: string;
+  generatedText: string;
   citations: string[];
 };
 
@@ -12,6 +12,7 @@ const SecurityModel = () => {
   const [responses, setResponses] = useState<ModelResponse[]>([]);
   const [bestResponse, setBestResponse] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [visibleCitations, setVisibleCitations] = useState<{ [key: string]: boolean }>({});
 
   // Handle query submission
   const handleQuerySubmit = async (e: React.FormEvent) => {
@@ -23,7 +24,6 @@ const SecurityModel = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),
-       // mode: 'no-cors'// Ensure query is passed as a JSON object
       });
       const data = await response.json(); // Assuming Lambda returns the structure described above
 
@@ -54,6 +54,14 @@ const SecurityModel = () => {
     }
   };
 
+  // Toggle citation visibility
+  const toggleCitations = (modelId: string) => {
+    setVisibleCitations((prev) => ({
+      ...prev,
+      [modelId]: !prev[modelId],
+    }));
+  };
+
   return (
     <div>
       <h1>ML Model Query Interface</h1>
@@ -80,6 +88,16 @@ const SecurityModel = () => {
             <div key={result.modelId}>
               <h3>{result.modelId}</h3>
               <p>{result.generatedText}</p>
+              <button onClick={() => toggleCitations(result.modelId)}>
+                {visibleCitations[result.modelId] ? "Hide Citations" : "Show Citations"}
+              </button>
+              {visibleCitations[result.modelId] && (
+                <ul>
+                  {result.citations.map((citation, index) => (
+                    <li key={index}>{citation}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           ))}
         </div>
